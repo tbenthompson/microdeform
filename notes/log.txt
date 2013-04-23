@@ -1,0 +1,62 @@
+point detection:
+    wrote hough circle code 
+
+    adaptive thresholding for picking circle centers from circular hough transform votes --> huge improvement!
+
+    examined various filters for the hough transform result... laplacian of gaussian seems best, but bilateral filtering
+    may work quite well too
+
+    replaced canny edge detection algorithm with grayscale gradient. the hough transform will be modified to handle
+    grayscale input... a stronger input (higher value) will have more of a vote in the result. new function =
+    houghCircleGrayscale --> huge improvement!
+
+    gaussian smoothed hough transform results --> huge improvement!
+
+    decided to settle on laplacian of gaussian initial filtering of hough transform result with gaussian smoothing
+    afterward.
+
+    tried thresholding the gradient. would have removed very small image gradients from the input to the hough transform.
+    this had a relatively negligible effect. removed because it wasn't worth the computational time
+
+    modified algorithm to handle testing multiple radii (used radii 6-12) --> huge improvement!
+
+    gather a training and testing set for testing compression (feature extraction) and classification techniques
+
+    code to run shape detection on each image (allImageCenters.m)    
+    
+    wrote code to allow me to manually cull the center points (cullDataset.m)
+    
+    wrote code for principal components analysis
+
+    wrote code for k means clustering
+
+    fixed code to maintain relationship between image chunks and centers easily
+
+    tested algorithm against rotation
+
+    ran algorithm on new data
+
+plan:
+
+run it on new data
+
+optimize for new data
+
+test centering alg with rotation perturbation and translation
+
+test how much the center can possibly move with perturbations
+
+improve center algorithm to ignore regions with no centers (currently, it picks one center for regular intervals)
+
+optimize parameters for pca and kmeans
+
+examine hotelling's tsquare distribution (maybe could use it to cull out the shapes that vary the most from a normal shape. these shapes are probably less useful, given that there are many samples from each crystal
+
+try pca on zscores rather than straight data
+
+investigate clustering algorithms besides k means
+
+examine various classification techniques relating EBSD data with shape (for shape input data, try both raw image data and result of lossy compression)
+    -- first learn about meaning of euler angles and how they relate to the actual crystal structure.
+
+

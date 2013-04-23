@@ -1,0 +1,44 @@
+so, we treat the hough transform as if it returns a likelihood
+
+now, we need to come up with the most likely transformation from the initial likelihood map to the final likelihood map
+
+if we know the locations, we can use an algorithm that finds a matching of minimum total weight where the weight is distance... http://en.wikipedia.org/wiki/Edmonds%27s_matching_algorithm#Weighted_matching
+
+but is that correct?
+
+but, now suppose that we don't know the locations precisely and in fact we have likelihoods for each pixel in our region
+
+we need some different way of dealing with this. does it fit within the Edmond's matching algorithm?
+
+i'm still thinking that some sort of really efficient forward modelling MCMC might work well.
+
+
+try to use some 2d variant of dynamic time warping 
+
+Credit to Ky-Ahn for pointing me towards dynamic time warping
+
+in general, algorithms for 2d are NP-complete: Elastic image matching is NP-complete by Keysers in Pattern Recognition Letters
+1d algorithm is O(n^2) in the base case -- READ THIS PAPER, IT HAS SOME USEFUL SUGGESTIONS FOR OTHER TECHNIQUES THAT MIGHT WORK AND MIGHT BE FASTER
+
+an approximation algorithm: Direct Image Matching by Dynamic Warping by Hansheng Lei at SUNY Buffalo == O(n^6)
+
+Piotr Mardziel's thesis "Improved Two-dimensional Warping" @ WPI has an improvement to O(n^4)
+
+If we use the FastDTW method from "Toward accurate dynamic time warping in linear time and space", then the 1d method is linear time and the 2D method becomes O(n^3)?
+
+investigate other polynomial time methods for doing the 2D dynamic warping that have cropped up since the Hansheng Lei approximation. possibly some sort of distance metric that was based on a least squares style enforcement of continuity and monotonicity, blah blah
+
+USE TIE POINTS -- A grid of human picked tie points could be used to localize the algorithm and increase it's speed -- 6n^3 vs. (6n)^3
+
+come up with function to represent the amount of information in a given region of the image -- then use this to weight the DTW algorithm
+--weighting algorithm is difficult
+--maybe something based on the fourier transform of the local area?
+--or some information-theoretic sort of thing? 
+--density of gradient?
+--density of hough transform
+
+ALTERNATE PLAN:
+use some sort of regularized least squares, maybe just a basic tikhonov regularization would work?
+does there exist some sort of localized LASSO regularization -- only one non-zero in a given region of the matrix?
+use SIFT
+

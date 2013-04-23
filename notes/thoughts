@@ -1,0 +1,5 @@
+alternate ways of doing the points detection:
+--see various particle tracking codes online and see how they do their tracking == http://physics.georgetown.edu/matlab/tutorial.html
+--maybe some sort of fourier transform and then statistical chi squared test with the distribution expected from a training set and then smoothly move the kernel over the image, could be pretty slow...
+--texture analysis document in my books directory
+--read: An Efficient Randomized Algorithm for Detecting Circles
