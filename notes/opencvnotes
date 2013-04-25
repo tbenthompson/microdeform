@@ -1,0 +1,5 @@
+all constants in C++ use CV_NAME, in python they are cv2.NAME, but sometimes they are at cv2.cv.CV_NAME, dumb!
+http://stackoverflow.com/questions/9860667/writing-robust-color-and-size-invariant-circle-detection-with-opencv-based-on
+http://stackoverflow.com/questions/10716464/what-are-the-correct-usage-parameter-values-for-houghcircles-in-opencv-for-iris
+http://stackoverflow.com/questions/10984313/opencv-2-4-1-computing-surf-descriptors-in-python
+
