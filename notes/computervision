@@ -1,0 +1,33 @@
+computer vision is the broad topic area that i should investigate
+refined further, motion estimation and optical flow are two important keywords, another is image sequence analysis
+the richard szeliski computer vision 2011 book seems good
+there are two general categories of options
+--feature based image alignment
+--optical flow based image alignment
+
+image alignment seems to be another decent keyword for what i'm trying to do
+http://www.codeproject.com/Articles/24809/Image-Alignment-Algorithms
+http://research.microsoft.com/apps/pubs/default.aspx?id=70092
+
+notes from reading the szeliski book:
+parametric motion involves regional or global image motion parameters, optical flow is much smaller scale
+hierarchical motion estimation is another solution -- do it at a broader level, then step smaller
+fourier-based alignment seems quite useful for simple problems involving just rigid deformations, but it doesn't seem like it would work well for any of my tasks
+for sub-pixel accuracy in our image alignment, we use the Lucas-Kanade SSD error function, which includes a spatial derivative term, thus accounting for the linear variation at sub-pixel accuracy. minimizing this becomes an iterative least-squares problem.
+in general, derivatives of the J_1 image can be approximated by derivatives of the J_0 image if they are close to similar (i wonder if this is the case for my problem?)
+bias-gain equation accounts for the exposure differences between J_1 and J_0
+**optical flow**
+Horn and Schunk is the basic optical flow algorithm, just do linear least squares with some extra constraints because the problem is underdetermined
+common extra constraints
+--splines == some sort of basis function gives a weight to each related pixel and then we get an overdetermined rather than underdetermined problem, the choice of splines seems kind of difficult, using a quadtree of spline refinements seems to help
+--regularization == smoothness constraints
+--markov random fields? -- investigate this further
+extensions of optical flow 
+-- calculate the hessian regionally rather than locally
+-- add other parameters (balance between per-pixel motion and parametric motion)
+-- match gradients, filtered or preprocesses images, or other metrics (hessian?) instead of the pixel brightness or color
+-- use L1 norm for minimization rather than L2
+-- anisotropic smoothness constraints (more smoothness along gradient vs. perpindicular to gradient?)
+
+whole bunch of tested algorithms
+

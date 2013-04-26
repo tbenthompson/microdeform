@@ -1,8 +1,4 @@
-explore various feature detectors
---SURF
---MSER
---the paper in my references
-
-look through the szeliski computer vision book
-
-i really just need to learn more about computer vision before i do much more...
+investigate the deqing sun paper on optical flow
+investigate markov random-fields in optical flow algorithms
+implement some of the canned optical flow techniques in cv2 and other computer vision libraries
+figure out why the farneback algorithm is doing such a terrible job!
