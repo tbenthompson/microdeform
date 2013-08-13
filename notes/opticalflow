@@ -1,0 +1,5 @@
+most of the optical flow algorithms are not intended for elastic deformations like my case. will they work?
+i should explore some of the different 
+
+options for optical flow algorithm:
+
