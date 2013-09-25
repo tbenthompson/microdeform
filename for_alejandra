@@ -1,0 +1,23 @@
+Hi Alejandra,
+
+I keep a folder like this for most of my projects... Anyway, the source folder has all the matlab code. The essential code is in the top level source folder and in the correlCorresps folder. 
+
+createGradients.m calculates the discrete derivatives for the image. 
+xCorr.m performs the initial cross correlation based image registration algorithm -- the one we talked about
+smoothedLS.m performs a simple version of the least squares based smoothing algorithm I talked about. It hasn't actually improved the results in any test I ran, but it's an interesting idea...
+errorFunction.m is the errorFunction for the smoothedLS least squares implementation.
+
+The correlCorresps folder holds David Young's code. It can be downloaded from
+http://www.mathworks.com/matlabcentral/fileexchange/27269-image-correspondences-using-cross-correlation
+
+The tutorial I mentioned is here:
+http://www.mathworks.com/matlabcentral/fileexchange/27269-image-correspondences-using-cross-correlation/content/html/correspDemo.html
+
+I made some edits to the code I downloaded from there so that it would return the entire array of cross correlation results instead of just the best match. 
+
+The notes folder has some my thoughts for various points through the projects. A lot of it is useless and is there just as a past record for me.
+
+Let me know if you need anything else,
+
+Cheers,
+Ben
