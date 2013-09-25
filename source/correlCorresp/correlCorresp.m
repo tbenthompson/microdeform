@@ -93,7 +93,11 @@ classdef correlCorresp
     
     % Copyright David Young 2010
     
-    
+    properties
+        %Added by Ben Thompson
+        xCorrMatrices
+        keepAll
+    end
     properties (Dependent)
         
         % Feature selection patch size
@@ -208,6 +212,7 @@ classdef correlCorresp
         % findCorresps can be called. Must be set to a 2D array. Normally
         % it should have the same size as image1.
         image2
+
     end
     
     properties (Dependent, SetAccess = private)
@@ -623,13 +628,21 @@ classdef correlCorresp
                 dd = dd.findCorrespsFwd;
                 
                 % Only retain matches within matchTol in both x and y
-                ok = abs(dd.frout2-cc.frout1) <= cc.mT & ...
-                    abs(dd.fcout2-cc.fcout1) <= cc.mT;
-                cc.frout1 = (dd.frout2(ok)+cc.frout1(ok))/2;
-                cc.fcout1 = (dd.fcout2(ok)+cc.fcout1(ok))/2;
-                cc.frout2 = cc.frout2(ok);
-                cc.fcout2 = cc.fcout2(ok);
-                cc.corrout = (dd.corrout(ok) + cc.corrout(ok))/2;
+                if cc.keepAll == true
+                    cc.frout1 = (dd.frout2 + cc.frout1) / 2;
+                    cc.fcout1 = (dd.fcout2 + cc.fcout1) / 2;
+                    cc.corrout = (dd.corrout + cc.corrout) / 2;
+                    cc.xCorrMatrices = (cc.xCorrMatrices + dd.xCorrMatrices) / 2
+                else
+                    ok = abs(dd.frout2-cc.frout1) <= cc.mT & ...
+                        abs(dd.fcout2-cc.fcout1) <= cc.mT;
+                    cc.frout1 = (dd.frout2(ok)+cc.frout1(ok))/2;
+                    cc.fcout1 = (dd.fcout2(ok)+cc.fcout1(ok))/2;
+                    cc.frout2 = cc.frout2(ok);
+                    cc.fcout2 = cc.fcout2(ok);
+                    cc.corrout = (dd.corrout(ok) + cc.corrout(ok))/2;
+                    cc.xCorrMatrices = (cc.xCorrMatrices(ok, :, :) + dd.xCorrMatrices(ok, :, :)) / 2
+                end
                 
                 if cc.pP
                     n = size(cc.fr, 1);
@@ -672,6 +685,7 @@ classdef correlCorresp
             frout = zeros(n, 1);
             fcout = zeros(n, 1);
             cout = zeros(n, 1);
+            xCorrMatrices = zeros(n, cc.xdmax - cc.xdmin + 1, cc.ydmax - cc.ydmin + 1);
             psh = cc.hpsize;
             
             if cc.pP
@@ -680,8 +694,7 @@ classdef correlCorresp
             
             % Iterate over features
             for i = 1:n
-                [frout(i), fcout(i), cout(i)] = ...
-                    cc.bestmatch(frin(i), fcin(i), psh);
+                [frout(i), fcout(i), cout(i), xCorrMatrices(i,:,:)] = cc.bestmatch(frin(i), fcin(i), psh);
                                 
                 if cc.pP && ~(mod(i,cc.pP))
                     fprintf('   Done %d tests\n', i);
@@ -694,10 +707,11 @@ classdef correlCorresp
             cc.fcout2 = fcout;
             cc.corrout = cout;
             cc.resOK = true;
+            cc.xCorrMatrices = xCorrMatrices;
         end
         
         
-        function [rm, cm, vm] = bestmatch(cc, r, c, psh)
+        function [rm, cm, vm, xCorrMatrix] = bestmatch(cc, r, c, psh)
             % Find single one-way match
             %
             % Looks for match between patch in IM1 centred on R,C and
@@ -708,8 +722,9 @@ classdef correlCorresp
             % We know that r and c are not too close to image borders
             patch = cc.im1(r-psh:r+psh, c-psh:c+psh);
             
-            [search_area, roff, coff] = cc.getreg(cc.im2, r, c, ...
+            [search_area, roff, coff, rstart, rend, cstart, cend] = cc.getreg(cc.im2, r, c, ...
                 cc.ydmin-psh, cc.ydmax+psh, cc.xdmin-psh, cc.xdmax+psh);
+            
             
             % stdev was offset already by psh
             stds = cc.getreg(cc.stdev2, r-psh, c-psh, ...
@@ -718,8 +733,18 @@ classdef correlCorresp
             patch = patch - mean(patch(:)); % zero mean
             
             % Core call of whole class - search for peak correlation
-            [rm, cm, vm] = corrpeak(search_area, patch, stds, cc.cT);
-            
+            [rm, cm, vm, temp] = corrpeak(search_area, patch, stds, cc.cT);
+
+            % This code assumes that the searchBox is square.
+            xCorrMatrix = zeros(cc.xdmax - cc.xdmin + 1, cc.ydmax - cc.ydmin + 1);
+            deltaX = cc.searchBox(2);
+            deltaY = cc.searchBox(4);
+            corrMatXLow = deltaX - r + rstart + 1 + 20;
+            corrMatXHigh = deltaX - r + rend + 1 - 20;
+            corrMatYLow = deltaY - c + cstart + 1 + 20;
+            corrMatYHigh = deltaY - c + cend + 1 - 20;
+            xCorrMatrix(corrMatXLow:corrMatXHigh,corrMatYLow:corrMatYHigh) = temp;
+
             % correct for offset
             rm = rm + roff;
             cm = cm + coff;
@@ -732,7 +757,9 @@ classdef correlCorresp
             else
                 s = cc.stdev1(r-psh, c-psh);
             end
-            vm = vm / (numel(patch) * s);
+            factor = (numel(patch) * s);
+            vm = vm / factor;
+            xCorrMatrix = xCorrMatrix / factor;
         end
         
         
@@ -752,7 +779,7 @@ classdef correlCorresp
     
     methods (Static, Access = private)
         
-        function [r, roff, coff] = getreg(im, r, c, r0, r1, c0, c1)
+        function [r, roff, coff, rstart, rend, cstart, cend] = getreg(im, r, c, r0, r1, c0, c1)
             % Gets region of im defined by r, c and a box, truncating if
             % necessary and returning also the row and column offsets of
             % the region.

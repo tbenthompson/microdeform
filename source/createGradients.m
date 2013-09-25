@@ -10,7 +10,7 @@ evenMagImageBD = histeq(smoothedImageBD); %correct light magnitude -- naive
 disp('finding gradient');
 [gradientXBD, gradientYBD] = gradient(double(evenMagImageBD));
 gradientImageBD = sqrt(gradientXBD .^ 2 + gradientYBD .^ 2);
-figure; imagesc(gradientImageBD); colormap(gray(256));
+% figure; imagesc(gradientImageBD); colormap(gray(256));
 
 
 smoothedImageAD = imfilter(inputImageAD, gaussianFilter, 'replicate');
@@ -19,6 +19,6 @@ evenMagImageAD = histeq(smoothedImageAD);
 disp('finding gradient');
 [gradientXAD, gradientYAD] = gradient(double(evenMagImageAD));
 gradientImageAD = sqrt(gradientXAD .^ 2 + gradientYAD .^ 2);
-figure; imagesc(gradientImageAD); colormap(gray(256));
+% figure; imagesc(gradientImageAD); colormap(gray(256));
 
 

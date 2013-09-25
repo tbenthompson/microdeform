@@ -1,4 +1,9 @@
-investigate the deqing sun paper on optical flow
-investigate markov random-fields in optical flow algorithms
-implement some of the canned optical flow techniques in cv2 and other computer vision libraries
-figure out why the farneback algorithm is doing such a terrible job!
+figure out why the code didn't work and run it more
+--maybe the problem is too nonlinear n it found a very local max, should i do some sort of random start
+--try lower nearestCount to speed things
+--try less features -- only the doubly matched ones?
+
+also try a sparsity method
+--count the number of deviations from the best value
+
+look at some sort of "isolation" metric

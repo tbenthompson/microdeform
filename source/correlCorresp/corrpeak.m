@@ -1,4 +1,4 @@
-function [r,c,v] = corrpeak(i, m, n, tol)
+function [r,c,v,cc] = corrpeak(i, m, n, tol)
 %CORRPEAK  Find peak of correlation.
 %   [R, C, V] = CORRPEAK(I, M, N, TOL)  Return the R,C coordinates in I of
 %   the peak of its correlation with M, together with the peak correlation

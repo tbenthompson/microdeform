@@ -16,11 +16,11 @@ b = evenMagImageAD(400:700, 800:1100);
 a = double(a);
 b = double(b);
 
-cc = correlCorresp('image1', a, 'image2', b, 'printProgress', 100, 'convTol', 0.01);
+cc = correlCorresp('image1', a, 'image2', b, 'printProgress', 100, 'convTol', 0.20);
 cc = cc.findCorresps;
 correspDisplay(cc.corresps, a);
 figure;imagesc(b);colormap(gray(256));
 directionx = cc.corresps(3,:) - cc.corresps(1,:);
 directiony = cc.corresps(4,:) - cc.corresps(2,:);
 figure;plot(directionx, directiony, '.')
-save('../data/correspsNice.mat', 'cc');
+save('../data/correspsNiceSavedReduced.mat', 'cc');
